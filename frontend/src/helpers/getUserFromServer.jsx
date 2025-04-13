@@ -1,11 +1,12 @@
-const getUserFromServer = async() =>{
+import apiRequest from '../utils/api';
+
+const getUserFromServer = async() => {
     try {
-        const serverUrl = import.meta.env?.VITE_SERVER_URL || 'http://localhost:3000'
-        const res = await fetch(`${serverUrl}/api/auth/user`,{
-            credentials:'include'
-        })
-        const data = await res.json()
-        return data
+        // Use hardcoded server URL for consistency
+        const serverUrl = 'http://localhost:3000'
+        console.log("Fetching user from:", serverUrl)
+        
+        return await apiRequest(`${serverUrl}/api/auth/user`);
     } catch (error) {
         console.error('Error in getUserFromServer:', error)
         return { success: false, message: 'Failed to fetch user data' }

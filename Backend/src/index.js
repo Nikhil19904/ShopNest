@@ -5,6 +5,9 @@ const cookieParser = require('cookie-parser')
 const authRouter = require('./routes/authRoutes')
 const connectDb = require('./config/db')
 const cartRouter = require('./routes/cartRoutes')
+const ratingRouter = require('./routes/ratingRoutes')
+const wishlistRouter = require('./routes/wishlistRoutes')
+const productRouter = require('./routes/productRoutes')
 const app = express()
 const port = process.env.PORT || 3000
 
@@ -14,7 +17,7 @@ connectDb()
 // Middleware
 app.use(express.json())
 app.use(cors({
-    origin: true, // Allow all origins in development
+    origin: process.env.ORIGIN || 'http://localhost:3002',
     credentials: true
 }))
 app.use(cookieParser())
@@ -22,6 +25,9 @@ app.use(cookieParser())
 // Routes
 app.use("/api/auth", authRouter)
 app.use("/api/cart", cartRouter)
+app.use("/api/ratings", ratingRouter)
+app.use("/api/wishlist", wishlistRouter)
+app.use("/api/products", productRouter)
 
 // Test route
 app.get('/test', (req, res) => {

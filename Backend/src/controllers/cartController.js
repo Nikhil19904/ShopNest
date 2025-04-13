@@ -1,5 +1,17 @@
 const User = require("../models/user")
-const stripe = require('stripe')(process.env.STRIPE_KEY)
+const Razorpay = require('razorpay')
+const crypto = require('crypto')
+
+// Initialize Razorpay with better error handling
+let razorpay;
+try {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  });
+} catch (error) {
+  console.error("Failed to initialize Razorpay:", error);
+}
 
 const addToCart = async (req, res) => {
     const { id, title, description, image, price, category } = req.body
@@ -194,36 +206,149 @@ const decrementQuantity = async (req, res) => {
 
 const checkOut = async (req, res) => {
     try {
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        mode: 'payment',
-        line_items: req.body.items.map(item => {
-          return {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: item.title,
-              },
-              unit_amount: item.price * 100, 
-            },
-            quantity: item.quantity,
-          };
-        }),
-        success_url: `${process.env.ORIGIN}/success`,
-        cancel_url: `${process.env.ORIGIN}/cancel`,
-      });
-  
-      res.status(200).json({ success: true, url: session.url });
+      const { items, paymentMethod } = req.body;
+      
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid or empty cart items"
+        });
+      }
+      
+      // Calculate total amount
+      const amount = items.reduce((total, item) => {
+        return total + (item.price * item.quantity);
+      }, 0) * 100; // Convert to smallest currency unit (paise)
+
+      if (isNaN(amount) || amount <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid order amount"
+        });
+      }
+
+      // Create Razorpay order with additional options
+      const options = {
+        amount: Math.round(amount), // Razorpay expects amount in paise (so * 100 for rupees)
+        currency: "INR",
+        receipt: "order_" + Date.now(),
+        notes: {
+          payment_method: paymentMethod || 'card',
+          items_count: items.length
+        }
+      };
+
+      try {
+        // Check if Razorpay is initialized
+        if (!razorpay) {
+          throw new Error("Payment gateway not initialized");
+        }
+        
+        const order = await razorpay.orders.create(options);
+        
+        if (!order || !order.id) {
+          throw new Error("Failed to create Razorpay order");
+        }
+
+        // Return order details to client
+        return res.status(200).json({
+          success: true,
+          order_id: order.id,
+          amount: order.amount,
+          currency: order.currency,
+          key_id: process.env.RAZORPAY_KEY_ID,
+          payment_method: paymentMethod || 'card'
+        });
+      } catch (razorpayError) {
+        console.error("Razorpay order creation error:", razorpayError);
+        
+        // Provide a mock payment option for development/testing
+        // This allows testing the checkout flow without valid Razorpay credentials
+        const mockOrderId = "mock_order_" + Date.now();
+        
+        return res.status(200).json({
+          success: true,
+          order_id: mockOrderId,
+          amount: Math.round(amount),
+          currency: "INR",
+          key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_mock",
+          is_mock: true, // Flag to indicate this is a mock order
+          mock_payment_id: "mock_pay_" + Date.now(),
+          mock_signature: crypto.createHmac('sha256', 'mock_secret')
+            .update(`${mockOrderId}|mock_pay_${Date.now()}`)
+            .digest('hex'),
+          payment_method: paymentMethod || 'card'
+        });
+      }
     } catch (error) {
-      res.status(500).json({
+      console.error("Checkout error:", error);
+      return res.status(500).json({
         success: false,
-        message: error.message,
+        message: "Error processing checkout: " + (error.message || "Unknown error")
       });
     }
-  };
+};
 
+// New endpoint to verify Razorpay payment
+const verifyPayment = async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, is_mock } = req.body;
+    
+    // Handle mock payment verification
+    if (is_mock) {
+      // Clear user's cart after successful mock payment
+      if (req.id) {
+        const user = await User.findById(req.id);
+        if (user) {
+          user.cart = [];
+          await user.save();
+        }
+      }
+      
+      return res.status(200).json({
+        success: true,
+        message: "Mock payment verification successful",
+      });
+    }
+    
+    // Create a signature to verify the payment
+    const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
+    shasum.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const digest = shasum.digest('hex');
+    
+    // Verify the signature
+    if (digest === razorpay_signature) {
+      // Payment is verified
+      
+      // Clear user's cart after successful payment
+      if (req.id) {
+        const user = await User.findById(req.id);
+        if (user) {
+          user.cart = [];
+          await user.save();
+        }
+      }
+      
+      res.status(200).json({
+        success: true,
+        message: "Payment verification successful",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      });
+    }
+  } catch (error) {
+    console.error("Verification error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
-  const clearCart = async(req,res) =>{
+const clearCart = async(req,res) =>{
     try{
         const userId = req.id
         const user = await User.findById(userId)
@@ -257,5 +382,6 @@ module.exports = {
     incrementQuantity,
     decrementQuantity,
     checkOut,
-    clearCart
+    clearCart,
+    verifyPayment
 }

@@ -2,23 +2,28 @@ import React from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { decrementQuantity, incrementQuantity, removeFromCart } from '../app/slices/cartSlice'
+import apiRequest from '../utils/api'
 
+// USD to INR conversion rate
+const USD_TO_INR_RATE = 83.16; // As of current rate, update as needed
+
+// Convert USD to INR
+const convertToINR = (usdPrice) => {
+    const inrPrice = usdPrice * USD_TO_INR_RATE;
+    return inrPrice.toFixed(2);
+};
 
 const CartItem = ({ item }) => {
     const dispatch = useDispatch()
     const handleRemoveFromCart = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cart/remove/${item.id}`, {
-                method: "DELETE",
-                credentials: 'include'
-            })
-            const data = await res.json()
+            const data = await apiRequest(`http://localhost:3000/api/cart/remove/${item.id}`, {
+                method: "DELETE"
+            });
 
             if (data.success) {
                 dispatch(removeFromCart(item.id))
                 toast.success(data.message)
-
-
             } else {
                 toast.error(data.message)
             }
@@ -30,17 +35,13 @@ const CartItem = ({ item }) => {
     }
     const handleIncrement = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cart/increment/${item.id}`, {
-                method: "POST",
-                credentials: 'include'
-            })
-            const data = await res.json()
+            const data = await apiRequest(`http://localhost:3000/api/cart/increment/${item.id}`, {
+                method: "POST"
+            });
 
             if (data.success) {
-
                 toast.success(data.message)
                 dispatch(incrementQuantity(item.id))
-
             } else {
                 toast.error(data.message)
             }
@@ -52,17 +53,13 @@ const CartItem = ({ item }) => {
     }
     const handleDecrement = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cart/decrement/${item.id}`, {
-                method: "POST",
-                credentials: 'include'
-            })
-            const data = await res.json()
+            const data = await apiRequest(`http://localhost:3000/api/cart/decrement/${item.id}`, {
+                method: "POST"
+            });
 
             if (data.success) {
-
                 toast.success(data.message)
                 dispatch(decrementQuantity(item.id))
-
             } else {
                 toast.error(data.message)
             }
@@ -87,7 +84,7 @@ const CartItem = ({ item }) => {
                 </h2>
 
                 <div className='flex justify-between  items-center  gap-5 '>
-                    <p className='text-lg font-semibold'>$ {item.price * item.quantity}</p>
+                    <p className='text-lg font-semibold'>₹ {convertToINR(item.price * item.quantity)}</p>
 
                 </div>
                 <div className='flex items-center gap-3'>

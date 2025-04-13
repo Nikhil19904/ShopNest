@@ -44,53 +44,75 @@ const register = async(req,res) =>{
     }
 }
 
-const login = async(req,res) =>{
-    try{
+const login = async(req,res) => {
+    try {
+        const { email, password } = req.body;
 
-        const {email,password} = req.body;
-
-        if(!email || !password){
+        // Input validation
+        if (!email || !password) {
             return res.status(400).json({
-                success:false,
-                message:"All fields are required."
-            })
-        }
-        const user = await User.findOne({email})
-
-        if(!user){
-            return res.status(400).json({
-                success:false,
-                message:"Wrong email or password."
-            })
+                success: false,
+                message: "Email and password are required."
+            });
         }
 
-        const comparePassword = await bcrypt.compare(password,user.password)
+        // Find user by email
+        const user = await User.findOne({ email });
 
-        if(!comparePassword){
-            return res.status(400).json({
-                success:false,
-                message:"Wrong email or password."
-            })
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials."
+            });
         }
-        const token = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:'1h'})
-        res.cookie('token',token,{
-            httpOnly:true,
-            secure:true,
-            sameSite:'none',
-            expires:new Date(Date.now()+3600000)
-        })
+
+        // Compare password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials."
+            });
+        }
+
+        // Generate token with appropriate expiration
+        const token = jwt.sign(
+            { id: user._id }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
+        
+        // Create safe user object (no password)
+        const userWithoutPassword = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            cart: user.cart
+        };
+
+        // Set cookie with proper security options
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
        
+        // Return success response
         res.status(200).json({
-            success:true,
-            message:"Login Successfull."
-        })
+            success: true,
+            message: "Login successful",
+            user: userWithoutPassword,
+            token
+        });
 
-
-    }catch(error){
+    } catch (error) {
+        console.error("Login error:", error);
         res.status(500).json({
-            success:false,
-            message:error.message
-        })
+            success: false,
+            message: "An error occurred during login. Please try again."
+        });
     }
 }
 

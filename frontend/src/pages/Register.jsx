@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import toast from "react-hot-toast"
 import { Link, useNavigate } from 'react-router-dom'
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa'
+import { apiRequest } from '../utils/api'
 
 const Register = () => {
   const initialData = {
@@ -23,32 +24,51 @@ const Register = () => {
 
   const handleSubmit = async(e) =>{
     e.preventDefault()
+    
+    // Form validation
+    if (!formData.name || !formData.email || !formData.password) {
+      toast.error("All fields are required")
+      return
+    }
+    
+    // Password length validation
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters long")
+      return
+    }
+    
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address")
+      return
+    }
+    
     try{
       setLoading(true)
-      const serverUrl = import.meta.env?.VITE_SERVER_URL || 'http://localhost:3000'
       
-      const res = await fetch(`${serverUrl}/api/auth/register`,{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        credentials: 'include',
-        body:JSON.stringify(formData)
-      })
+      // Use local server for development - this is a workaround for missing env vars
+      const serverUrl = 'http://localhost:3000'
+      console.log("Registering user at:", serverUrl)
+      
+      const data = await apiRequest(`${serverUrl}/api/auth/register`, {
+        method: "POST",
+        body: JSON.stringify(formData)
+      });
 
-      const data = await res.json()
+      console.log("Registration response:", data)
 
       if(data.success){
         setFormData(initialData)
-        toast.success(data.message)
+        toast.success(data.message || "Registration successful!")
         navigate("/login")
-      }else{
-        toast.error(data.message)
+      } else {
+        toast.error(data.message || "Registration failed. Please try again.")
       }
-    }catch(error){
+    } catch(error) {
       console.error("Registration error:", error)
-      toast.error("Something went wrong. Please try again.")
-    }finally{
+      toast.error("Server connection error. Please check your backend server.")
+    } finally {
       setLoading(false)
     }
   }

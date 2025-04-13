@@ -22,16 +22,16 @@ const Footer = () => {
               Your one-stop destination for all your shopping needs. Quality products, great prices, and excellent service.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="social-icon">
+              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
                 <FaFacebook />
               </a>
-              <a href="#" className="social-icon">
+              <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon">
                 <FaTwitter />
               </a>
-              <a href="#" className="social-icon">
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon">
                 <FaInstagram />
               </a>
-              <a href="#" className="social-icon">
+              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon">
                 <FaLinkedin />
               </a>
             </div>
@@ -70,11 +70,11 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
                 <FaMapMarkerAlt className="text-indigo-400" />
-                <span className="text-gray-400">123 Shopping Street, City</span>
+                <span className="text-gray-400">Panchal Vihar, Karawal Nagar Delhi-110094</span>
               </li>
               <li className="flex items-center space-x-2">
                 <FaPhone className="text-indigo-400" />
-                <span className="text-gray-400">+1 234 567 890</span>
+                <span className="text-gray-400">+91-9910960074</span>
               </li>
               <li className="flex items-center space-x-2">
                 <FaEnvelope className="text-indigo-400" />
