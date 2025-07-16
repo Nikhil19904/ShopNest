@@ -5,6 +5,10 @@ import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import ProductCard from '../components/ProductCard';
 import LiveChatWidget from '../components/LiveChatWidget';
+import StoreLocator from '../components/StoreLocator';
+import CategorySection from '../components/CategorySection';
+import FlashSaleTimer from '../components/FlashSaleTimer';
+import WelcomePopup from '../components/WelcomePopup';
 
 // Animation variants
 const containerVariants = {
@@ -238,9 +242,16 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <WelcomePopup/>
 
+
+      <FlashSaleTimer/>
+
+
+      <CategorySection/>
+{/* 
       {/* Featured Categories Section */}
-      <AnimatedSection className="py-16 bg-white dark:bg-gray-800">
+      {/* <AnimatedSection className="py-16 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
           <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Shop by Category</h2>
@@ -284,19 +295,37 @@ const Home = () => {
             ))}
           </motion.div>
         </div>
-      </AnimatedSection>
+      </AnimatedSection> } */}
+<a
+  href="https://wa.me/9910960074" // replace with your WhatsApp number
+  target="_blank"
+  rel="noopener noreferrer"
+  className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-colors duration-300"
+  title="Chat with us on WhatsApp"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path d="M20.52 3.48A11.85 11.85 0 0 0 2.23 17.77L.26 24l6.31-2a11.87 11.87 0 0 0 14-18.52zm-1.42 15.65a9.44 9.44 0 0 1-13-13 9.44 9.44 0 0 1 13 13zm-2.52-2.53c-.34-.17-2-.99-2.3-1.1s-.53-.17-.76.18-1 1.1-1.2 1.33-.44.26-.78.08a7.75 7.75 0 0 1-2.3-1.42 8.68 8.68 0 0 1-1.6-2 0.89 0.89 0 0 1 .09-.91c.1-.13.26-.34.39-.51a1.26 1.26 0 0 0 .17-.3.46.46 0 0 0 0-.43c-.08-.17-.75-1.8-1-2.44s-.53-.53-.76-.54h-.64a1.27 1.27 0 0 0-.91.43 3.81 3.81 0 0 0-1.15 2.83c0 1.66 1.2 3.26 1.36 3.5s2.38 3.63 5.76 4.8a14.06 14.06 0 0 0 1.44.43 6.69 6.69 0 0 0 2.73.17 4.4 4.4 0 0 0 2.9-2.07 3.6 3.6 0 0 0 .26-2.07c-.1-.17-.32-.26-.66-.43z" />
+  </svg>
+</a>
+
 
       {/* Products Section */}
-      <AnimatedSection className="py-16 bg-gray-100 dark:bg-gray-700">
+      { <AnimatedSection className="py-16 bg-gray-100 dark:bg-gray-700">
         <div className="container mx-auto px-4">
           <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Featured Products</h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Discover our handpicked selection of premium products</p>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Discover our handpicked selection of premium items</p>
           </motion.div>
           
-          <FeaturedProducts />
+          <FeaturedProducts/>
         </div>
-      </AnimatedSection>
+      </AnimatedSection> }
+      
 
       {/* Features Section */}
       <AnimatedSection className="py-16 bg-white dark:bg-gray-800">
@@ -419,7 +448,9 @@ const Home = () => {
         </div>
       </AnimatedSection>
 
-      {/* CTA Section */}
+         <StoreLocator/>
+
+      {/* testimonials */}
       <AnimatedSection className="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 relative overflow-hidden">
         <motion.div 
           className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNjB2NjBIMHoiLz48cGF0aCBkPSJNMzAgMzBoMXYxaC0xeiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIuMSIvPjwvZz48L3N2Zz4=')] opacity-10"
@@ -432,6 +463,7 @@ const Home = () => {
             duration: 20
           }}
         ></motion.div>
+
         
         <div className="container mx-auto px-4 relative">
           <motion.div
@@ -465,9 +497,11 @@ const Home = () => {
             </motion.div>
           </motion.div>
         </div>
-      </AnimatedSection>
+      </AnimatedSection> 
+      {/* <Newsletter/> */}
       
       {/* Live Chat Widget */}
+
       <LiveChatWidget />
     </div>
   );

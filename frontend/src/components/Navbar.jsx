@@ -146,7 +146,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             to="/" 
             className={`text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:from-indigo-700 hover:to-purple-700 transition-all duration-500 transform hover:scale-105 ${scrolled ? 'text-xl' : 'text-2xl'}`}
           >
-            Shopping Cart
+            ShopNest
           </Link>
 
           {/* Modern Search Bar - Desktop */}
