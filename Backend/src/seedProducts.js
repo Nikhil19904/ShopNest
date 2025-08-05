@@ -9,6 +9,7 @@ const sampleProducts = [
     description: "Slim-fitting style, contrast raglan long sleeve, three-button henley placket, light weight & soft fabric for breathable and comfortable wearing. The Henley style round neckline includes a three-button placket.",
     category: "men's clothing",
     image: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg",
+    barcode: "1234567890123",
     rating: {
       rate: 4.1,
       count: 259
@@ -20,6 +21,7 @@ const sampleProducts = [
     description: "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
     category: "men's clothing",
     image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+    barcode: "9876543210987",
     rating: {
       rate: 3.9,
       count: 120
@@ -31,6 +33,7 @@ const sampleProducts = [
     description: "Note: The Jackets is US standard size, Please choose size as your usual wear. Material: 100% Polyester; Detachable Liner Fabric: Warm Fleece. Detachable Functional Liner: Skin Friendly, Lightweight and Warm.",
     category: "women's clothing",
     image: "https://fakestoreapi.com/img/51Y5NI-I5jL._AC_UX679_.jpg",
+    barcode: "5555666677778",
     rating: {
       rate: 2.6,
       count: 235
