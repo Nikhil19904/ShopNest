@@ -31,6 +31,12 @@ const productSchema = new mongoose.Schema({
       type: Number,
       default: 0
     }
+  },
+  barcode: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows multiple null values
+    trim: true
   }
 }, { timestamps: true });
 

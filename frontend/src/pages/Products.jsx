@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import BarcodeScanner from '../components/BarcodeScanner';
 import { apiRequest } from '../utils/api';
 import { ENDPOINTS } from '../config/api';
+import { FiCamera } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const Products = () => {
