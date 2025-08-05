@@ -138,7 +138,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
   };
 
   return (
-    <header className={`fixed w-full z-50 top-0 transition-all duration-300 ${scrolled ? 'py-1 shadow-lg' : 'py-3 shadow-md'} ${isDarkMode ? 'bg-gradient-to-r from-purple-900 to-indigo-900' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}>
+    <header className={`fixed w-full z-50 top-0 transition-all duration-300 ${scrolled ? 'py-1 shadow-lg' : 'py-3 shadow-md'} ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <nav className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -260,10 +260,10 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
 
           {/* Mobile menu button */}
           <button 
-            className="md:hidden visible p-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors duration-200 hover:rotate-12 transform"
+            className="md:hidden visible p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 hover:rotate-12 transform"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <CiMenuBurger size={25} className={`transition-transform duration-300 ${isOpen ? 'rotate-90' : 'rotate-0'} text-white`} />
+            <CiMenuBurger size={25} className={`transition-transform duration-300 ${isOpen ? 'rotate-90' : 'rotate-0'} ${isDarkMode ? 'text-white' : 'text-gray-800'}`} />
           </button>
 
           {/* Desktop Navigation */}
@@ -272,7 +272,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             <Link 
               to="/" 
               className={`flex flex-col items-center group relative py-2 transition-all duration-300 hover:-translate-y-1 ${
-                isActive('/') ? 'text-yellow-300' : 'text-white hover:text-yellow-200'
+                isActive('/') ? 'text-indigo-600' : isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <FaHome className={`text-xl mb-1 transition-transform duration-300 group-hover:scale-110 ${isActive('/') ? 'animate-pulse text-indigo-600' : ''}`} />
@@ -288,7 +288,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             <Link 
               to="/products" 
               className={`flex flex-col items-center group relative py-2 transition-all duration-300 hover:-translate-y-1 ${
-                isActive('/products') ? 'text-yellow-300' : 'text-white hover:text-yellow-200'
+                isActive('/products') ? 'text-indigo-600' : isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <FaBox className={`text-xl mb-1 transition-transform duration-300 group-hover:scale-110 ${isActive('/products') ? 'animate-pulse text-indigo-600' : ''}`} />
@@ -304,7 +304,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             <Link
               to="/cart"
               className={`flex flex-col items-center group relative py-2 transition-all duration-300 hover:-translate-y-1 ${
-                isActive('/cart') ? 'text-yellow-300' : 'text-white hover:text-yellow-200'
+                isActive('/cart') ? 'text-indigo-600' : isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <div className="relative">
@@ -328,7 +328,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
               <div className="relative group">
                 <button
                   className={`flex flex-col items-center py-2 transition-all duration-300 hover:-translate-y-1 ${
-                    isActive('/profile') ? 'text-yellow-300' : 'text-white hover:text-yellow-200'
+                    isActive('/profile') ? 'text-indigo-600' : isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
                   }`}
                 >
                   <FaUser className={`text-xl mb-1 transition-transform duration-300 group-hover:scale-110 ${isActive('/profile') ? 'animate-pulse text-indigo-600' : ''}`} />
@@ -368,7 +368,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                 <Link 
                   to="/login" 
                   className={`flex flex-col items-center py-2 transition-all duration-300 hover:-translate-y-1 ${
-                    isActive('/login') ? 'text-yellow-300' : 'text-white hover:text-yellow-200'
+                    isActive('/login') ? 'text-indigo-600' : isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
                   }`}
                 >
                   <FaUser className={`text-xl mb-1 transition-transform duration-300 hover:scale-110 ${isActive('/login') ? 'animate-pulse text-indigo-600' : ''}`} />
@@ -399,7 +399,9 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                   setIsDarkMode(prevMode => !prevMode);
                 }
               }}
-              className="flex flex-col items-center group relative py-2 transition-all duration-300 hover:-translate-y-1 text-white hover:text-yellow-200"
+              className={`flex flex-col items-center group relative py-2 transition-all duration-300 hover:-translate-y-1 ${
+                isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
+              }`}
             >
               {isDarkMode ? (
                 <CiLight className="text-xl mb-1 transition-transform duration-300 group-hover:scale-110 animate-spin-slow" />
