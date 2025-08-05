@@ -9,9 +9,11 @@ import toast from 'react-hot-toast';
 
 const Products = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || 'all',
     minPrice: '',
@@ -73,6 +75,14 @@ const Products = () => {
     if (filters.rating && product.rating.rate < parseFloat(filters.rating)) return false;
     return true;
   });
+
+  // Handle barcode scan success
+  const handleScanSuccess = (product) => {
+    setShowScanner(false);
+    // Navigate to product detail page
+    navigate(`/product/${product._id}`);
+    toast.success(`Found: ${product.title}`);
+  };
 
   if (loading) {
     return (
@@ -251,6 +261,27 @@ const Products = () => {
 
           {/* Products Grid - Takes remaining width */}
           <div className="md:w-3/4">
+            {/* Products Header with Scanner Button */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Products
+                  </h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    {filteredProducts.length} products found
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowScanner(true)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                >
+                  <FiCamera className="text-lg" />
+                  Scan Barcode
+                </button>
+              </div>
+            </div>
+
             {filteredProducts.length === 0 ? (
               <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-md">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -270,6 +301,14 @@ const Products = () => {
           </div>
         </div>
       </div>
+
+      {/* Barcode Scanner Modal */}
+      {showScanner && (
+        <BarcodeScanner
+          onScanSuccess={handleScanSuccess}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 };
