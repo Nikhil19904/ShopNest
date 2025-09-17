@@ -285,20 +285,21 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             </Link>
 
             {/* Products Link */}
-            <Link 
-              to="/products" 
-              className={`flex flex-col items-center group relative py-2 transition-all duration-300 hover:-translate-y-1 ${
-                isActive('/products') ? 'text-indigo-600' : isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
-              }`}
-            >
-              <FaBox className={`text-xl mb-1 transition-transform duration-300 group-hover:scale-110 ${isActive('/products') ? 'animate-pulse text-indigo-600' : ''}`} />
-              <span className="text-xs relative">
-              Products
-                {isActive('/products') && (
-                  <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-indigo-600 animate-expandWidth"></span>
-                )}
-              </span>
-            </Link>
+          <Link 
+  to="/products" 
+  className={`flex flex-col items-center group relative py-2 transition-all duration-300 hover:-translate-y-1 ${
+    isActive('/products') ? 'text-indigo-600' : isDarkMode ? 'text-gray-200 hover:text-white' : 'text-gray-700 hover:text-gray-900'
+  }`}
+>
+  <FaBox className={`text-xl mb-1 transition-transform duration-300 group-hover:scale-110 ${isActive('/products') ? 'animate-pulse text-indigo-600' : ''}`} />
+  <span className="text-xs relative">
+    Products
+    {isActive('/products') && (
+      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-indigo-600 animate-expandWidth"></span>
+    )}
+  </span>
+</Link>
+
             
             {/* Cart Link */}
             <Link

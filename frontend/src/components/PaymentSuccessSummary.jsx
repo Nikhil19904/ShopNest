@@ -1,6 +1,6 @@
-import React from 'react';
+// import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaCheckCircle, FaShoppingBag, FaHome, FaBox } from 'react-icons/fa';
+import { FaCheckCircle, FaShoppingBag, FaHome} from 'react-icons/fa';
 
 const PaymentSuccessSummary = ({ orderDetails }) => {
   // Default values if orderDetails is not provided

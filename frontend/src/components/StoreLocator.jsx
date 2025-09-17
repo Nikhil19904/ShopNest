@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt, FaDirections, FaTimes, FaWhatsapp, FaCheckCircle, FaTimesCircle, FaParking, FaWheelchair } from "react-icons/fa";
 
 const stores = [
