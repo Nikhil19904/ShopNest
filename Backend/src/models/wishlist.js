@@ -1,29 +1,26 @@
-const mongoose = require('mongoose');
+// models/Wishlist.js
+module.exports = (sequelize, DataTypes) => {
+  const Wishlist = sequelize.define('Wishlist', {
+    // other fields...
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,  // <-- important for SET NULL
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'CASCADE',
+    },
+  });
 
-const wishlistSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  products: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product'
-  }],
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+  Wishlist.associate = (models) => {
+    Wishlist.belongsTo(models.User, {
+      foreignKey: 'userId',
+      onDelete: 'SET NULL',
+      onUpdate: 'CASCADE',
+    });
+  };
 
-// Update the updatedAt timestamp before saving
-wishlistSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-module.exports = mongoose.model('Wishlist', wishlistSchema); 
+  return Wishlist;
+};

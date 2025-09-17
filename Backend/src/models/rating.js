@@ -1,34 +1,26 @@
-const mongoose = require('mongoose');
-
-const ratingSchema = new mongoose.Schema({
+// models/Rating.js
+module.exports = (sequelize, DataTypes) => {
+  const Rating = sequelize.define('Rating', {
+    // other fields...
     productId: {
-        type: String,
-        required: true
+      type: DataTypes.INTEGER,
+      allowNull: true,  // <-- important for SET NULL
+      references: {
+        model: 'Products',
+        key: 'id',
+      },
+      onDelete: 'SET NULL',
+      onUpdate: 'CASCADE',
     },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
-    },
-    rating: {
-        type: Number,
-        required: true,
-        min: 1,
-        max: 5
-    },
-    review: {
-        type: String,
-        required: false
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
+  });
 
-// Create compound index to ensure one rating per user per product
-ratingSchema.index({ productId: 1, userId: 1 }, { unique: true });
+  Rating.associate = (models) => {
+    Rating.belongsTo(models.Product, {
+      foreignKey: 'productId',
+      onDelete: 'SET NULL',
+      onUpdate: 'CASCADE',
+    });
+  };
 
-const Rating = mongoose.model('rating', ratingSchema);
-
-module.exports = Rating; 
+  return Rating;
+};
