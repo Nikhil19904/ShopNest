@@ -20,8 +20,8 @@ const testProductsApi = async () => {
 
     // Try to access the API
     try {
-      console.log("\nTrying to access API at http://localhost:3000/api/products");
-      const response = await axios.get('http://localhost:3000/api/products');
+      console.log("\nTrying to access API at http://localhost:3001/api/products");
+      const response = await axios.get('http://localhost:3001/api/products');
       console.log("API Response Status:", response.status);
       console.log("API Response Data:", response.data);
     } catch (apiError) {

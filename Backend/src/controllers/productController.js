@@ -1,28 +1,29 @@
-const Product = require('../models/product');
+const { Op } = require('sequelize');
+const Product = require('../models/product'); // Sequelize model
 
 // Get all products
 const getAllProducts = async (req, res) => {
     try {
         const { search, category } = req.query;
-        let query = {};
 
-        // Add search filter if provided
+        // Build where clause dynamically
+        const where = {};
+
+        // Search by title or description
         if (search) {
-            query = {
-                $or: [
-                    { title: { $regex: search, $options: 'i' } },
-                    { description: { $regex: search, $options: 'i' } }
-                ]
-            };
+            where[Op.or] = [
+                { title: { [Op.like]: `%${search}%` } },
+                { description: { [Op.like]: `%${search}%` } }
+            ];
         }
 
-        // Add category filter if provided
+        // Filter by category
         if (category && category !== 'all') {
-            query.category = category;
+            where.category = category;
         }
 
-        const products = await Product.find(query);
-        
+        const products = await Product.findAll({ where });
+
         res.status(200).json({
             success: true,
             products
@@ -41,7 +42,7 @@ const getAllProducts = async (req, res) => {
 const getProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await Product.findById(id);
+        const product = await Product.findByPk(id);
 
         if (!product) {
             return res.status(404).json({
@@ -67,4 +68,4 @@ const getProduct = async (req, res) => {
 module.exports = {
     getAllProducts,
     getProduct
-}; 
+};

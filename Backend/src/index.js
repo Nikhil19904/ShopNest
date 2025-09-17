@@ -3,9 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
-const { connectDb, sequelize } = require('./config/db'); // ✅ destructure sequelize instance
-
-// Routers
+const { connectDb, sequelize } = require('./config/db');
 const authRouter = require('./routes/authRoutes');
 const cartRouter = require('./routes/cartRoutes');
 const ratingRouter = require('./routes/ratingRoutes');
@@ -13,52 +11,39 @@ const wishlistRouter = require('./routes/wishlistRoutes');
 const productRouter = require('./routes/productRoutes');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
-// Connect to database
+// Connect DB & sync models
 (async () => {
   await connectDb();
-
-  // ✅ Sync all Sequelize models with DB
   sequelize.sync({ alter: true })
-    .then(() => console.log("✅ All models synced with MySQL"))
+    .then(() => console.log("✅ Models synced"))
     .catch(err => console.error("❌ Sync failed:", err));
 })();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: process.env.ORIGIN || 'http://localhost:3002',
-  credentials: true
-}));
 app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:3002', // React frontend
+  credentials: true,               // Allow cookies/auth headers
+  methods: ['GET','POST','PUT','DELETE']
+}));
 
 // Routes
-app.use("/api/auth", authRouter);
-app.use("/api/cart", cartRouter);
-app.use("/api/ratings", ratingRouter);
-app.use("/api/wishlist", wishlistRouter);
-app.use("/api/products", productRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/ratings', ratingRouter);
+app.use('/api/wishlist', wishlistRouter);
+app.use('/api/products', productRouter);
 
 // Test route
-app.get('/test', (req, res) => {
-  res.json({
-    message: 'Backend server is running!',
-    status: 'success'
-  });
-});
+app.get('/test', (req, res) => res.json({ message: 'Backend running!' }));
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({
-    message: 'Something went wrong!',
-    status: 'error'
-  });
+  res.status(500).json({ message: 'Something went wrong!', status: 'error' });
 });
 
-// Start server
-app.listen(port, () => {
-  console.log(`🚀 Server listening on port ${port}`);
-  console.log('CORS enabled for all origins');
-});
+app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
