@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BiChevronRight } from 'react-icons/bi';
@@ -10,7 +10,8 @@ const categories = [
     image: "/images/categories/electronics.jpg",
     icon: "🎮",
     itemCount: 150,
-    bgColor: "from-blue-500/10 to-indigo-500/10"
+    badge: "New",
+    subcategories: ["Mobiles", "Laptops", "Cameras", "Accessories"]
   },
   {
     id: 2,
@@ -18,7 +19,8 @@ const categories = [
     image: "/images/categories/fashion.jpg",
     icon: "👕",
     itemCount: 200,
-    bgColor: "from-pink-500/10 to-rose-500/10"
+    badge: "Popular",
+    subcategories: ["Men's Clothing", "Women's Clothing", "Shoes", "Accessories"]
   },
   {
     id: 3,
@@ -26,7 +28,7 @@ const categories = [
     image: "/images/categories/home.jpg",
     icon: "🏠",
     itemCount: 120,
-    bgColor: "from-amber-500/10 to-yellow-500/10"
+    subcategories: ["Furniture", "Decor", "Kitchen", "Bedding"]
   },
   {
     id: 4,
@@ -34,7 +36,7 @@ const categories = [
     image: "/images/categories/sports.jpg",
     icon: "⚽",
     itemCount: 90,
-    bgColor: "from-green-500/10 to-emerald-500/10"
+    subcategories: ["Fitness", "Outdoor", "Indoor", "Accessories"]
   },
   {
     id: 5,
@@ -42,7 +44,7 @@ const categories = [
     image: "/images/categories/beauty.jpg",
     icon: "✨",
     itemCount: 180,
-    bgColor: "from-purple-500/10 to-violet-500/10"
+    subcategories: ["Skincare", "Makeup", "Haircare", "Fragrances"]
   },
   {
     id: 6,
@@ -50,66 +52,124 @@ const categories = [
     image: "/images/categories/books.jpg",
     icon: "📚",
     itemCount: 250,
-    bgColor: "from-red-500/10 to-orange-500/10"
+    subcategories: ["Fiction", "Non-fiction", "Comics", "Academic"]
   }
 ];
 
 const CategorySection = () => {
+  const [hoveredCategory, setHoveredCategory] = useState(null);
+
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-50/50 via-blue-50/30 to-indigo-50/20 dark:bg-blue-900">
+    <section className="py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-8 flex items-center justify-between"
         >
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
             Shop by Category
           </h2>
-          <p className="text-white-600 bold:text-gray-400">
-            Explore our wide range of products across various categories
-          </p>
+          <Link to="/products" className="text-blue-600 hover:underline font-medium">
+            See all categories
+          </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Desktop grid */}
+        <div className="hidden md:grid grid-cols-3 lg:grid-cols-6 gap-6">
           {categories.map((category) => (
             <motion.div
               key={category.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ y: -5 }}
-              viewport={{ once: true }}
+              whileHover={{ scale: 1.03 }}
+              onMouseEnter={() => setHoveredCategory(category.id)}
+              onMouseLeave={() => setHoveredCategory(null)}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow relative"
             >
-              <Link 
-                to={`/category/${category.id}`}
-                className="block relative overflow-hidden rounded-2xl group bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${category.bgColor} group-hover:scale-110 transition-transform duration-500`} />
-                <div className="relative p-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-4xl">{category.icon}</span>
-                    <span className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <Link to={`/category/${category.id}`} className="block overflow-hidden rounded-xl">
+                {/* Image */}
+                <div className="h-36 w-full overflow-hidden rounded-t-xl relative">
+                  <img 
+                    src={category.image} 
+                    alt={category.name} 
+                    className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+                  />
+                  {category.badge && (
+                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {category.badge}
+                    </span>
+                  )}
+                </div>
+
+                {/* Info */}
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-2xl">{category.icon}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
                       {category.itemCount} items
-                      <BiChevronRight className="ml-1" />
                     </span>
                   </div>
-                  
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     {category.name}
                   </h3>
-                  
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Shop Now
-                    </span>
-                    <motion.div
-                      whileHover={{ x: 5 }}
-                      className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
-                    >
-                      <BiChevronRight className="text-gray-900 dark:text-white" />
-                    </motion.div>
+                    <span className="text-sm text-blue-600 font-medium hover:underline">Shop Now</span>
+                    <BiChevronRight className="text-gray-500 dark:text-gray-300" />
                   </div>
+                </div>
+
+                {/* Mega Dropdown */}
+                {hoveredCategory === category.id && category.subcategories && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 p-4"
+                  >
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      {category.name} Categories
+                    </h4>
+                    <ul className="space-y-2">
+                      {category.subcategories.map((sub, index) => (
+                        <li key={index}>
+                          <Link 
+                            to={`/category/${category.id}/${sub.toLowerCase()}`} 
+                            className="text-gray-700 dark:text-gray-200 hover:text-blue-600 block transition-colors"
+                          >
+                            {sub}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Mobile scroll */}
+        <div className="flex md:hidden space-x-4 overflow-x-auto scrollbar-hide py-4">
+          {categories.map((category) => (
+            <motion.div
+              key={category.id}
+              whileHover={{ scale: 1.05 }}
+              className="min-w-[180px] bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow flex-shrink-0"
+            >
+              <Link to={`/category/${category.id}`} className="block overflow-hidden rounded-xl">
+                <div className="h-32 w-full overflow-hidden rounded-t-xl">
+                  <img 
+                    src={category.image} 
+                    alt={category.name} 
+                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-1">
+                    {category.name}
+                  </h3>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{category.itemCount} items</span>
                 </div>
               </Link>
             </motion.div>
